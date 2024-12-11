@@ -20,22 +20,8 @@ import NoData from "../../components/NoData";
 function TaskTable() {
 
     const [openModal, setOpenModal] = useState(false);
-    const [tasks, setTasks] =useState([
-        {
-            "id": 1,
-            "title": "Ziaul Hoque",
-            "description": "This is my Friend",
-            "assign": "Person One",
-            "priority": "High"
-        },
-        {
-            "id": 2,
-            "title": "Aminul Hoque",
-            "description": "This is my secend brother",
-            "assign": "Person One",
-            "priority": "High"
-        }
-    ]);
+    const [tasks, setTasks] =useState([]);
+    const [searchText, setSearchText] = useState('')
 
     const createHandler = (item) => {
         let updateTask = [
@@ -45,7 +31,6 @@ function TaskTable() {
         setTasks(updateTask)
     }
     const taskEditHandler = (task) => {
-        console.log(task);
         setTasks(tasks.map(item => {
             if (task.id == item.id) {
                 return task;
@@ -60,6 +45,13 @@ function TaskTable() {
         }))
         
     }
+    const searchhandler = (text) => {
+        setSearchText(text);
+        
+    }
+    const updateTask = tasks.filter(item => {
+        return item.title.toLowerCase().includes(searchText.toLowerCase())
+    })
 
     return (
         <Container className="mt-7">
@@ -68,7 +60,7 @@ function TaskTable() {
                 <Button onClick={() => setTasks([])} color="failure">Clear Tasks</Button>
             </div>
             <div className="p-3 mt-6 border rounded-sm">
-                <TaskTableHeader />
+                <TaskTableHeader onSearch={searchhandler} />
                 <div>
                     <div className="overflow-x-auto">
                         <Table>
@@ -81,7 +73,7 @@ function TaskTable() {
                                 <Table.HeadCell>Action</Table.HeadCell>
                             </Table.Head>
                             <Table.Body className="divide-y">
-                                {tasks.length == 0 ? <NoData /> : tasks.map((task, index) => <TaskItem data={task} index={index} key={task.id} editTask={taskEditHandler} deletTask={deletHandler} />)} 
+                                {tasks.length == 0 ? <NoData /> : updateTask.map((task, index) => <TaskItem data={task} index={index} key={task.id} editTask={taskEditHandler} deletTask={deletHandler} />)} 
                             </Table.Body>
                         </Table>
                     </div>
